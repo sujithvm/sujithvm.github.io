@@ -1,7 +1,7 @@
 @import url(http://fonts.googleapis.com/css?family=Raleway:400);
 
-h1 {font: 400 1.75em/1.5em "Raleway", "Helvetica Neue", Helvetica, sans-serif; text-align:left;}
-h2 {font: 300 1.5em/1.25em "Raleway", "Helvetica Neue", Helvetica, sans-serif; text-align:left;}
+h1 {font: 400 1.75em/1.0em "Raleway", "Helvetica Neue", Helvetica, sans-serif; text-align:left; margin-left: 10px}
+h2 {font: 300 1.2em/0em "Raleway", "Helvetica Neue", Helvetica, sans-serif; text-align:left; margin-left: 10px}
 
 
 svg { position:fixed; top:0; left:0; height:100%; width:100% }
@@ -21,10 +21,6 @@ body {
     overflow: hidden;
     font-family:arial;
     color:#fff;
-}
-
-h1{
-	margin:0;
 }
 
 a {
