@@ -169,9 +169,9 @@ return {
     {"id": "w5", "data": "Sanfoundry", "group": 2, "size": 50, "img": "img/sanfoundry.png"},
 
     {"id": "education", "data": "Education", "group": 3, "size": 40, "fa": '\uf19c'},
-    {"id": "e1", "data": "S.J.B.H.S.", "group": 3, "size": 50, "img": "img/sjbhs.png"},
-    {"id": "e2", "data": "P.E.S.I.T.", "group": 3, "size": 50, "img": "img/pesit.jpg"},
-    {"id": "e3", "data": "U.C.S.D", "group": 3, "size": 50, "img": "img/ucsd.jpg"},
+    {"id": "e1", "data": "St. Joseph's Boys' High School", "group": 3, "size": 50, "img": "img/sjbhs.png"},
+    {"id": "e2", "data": "P.E.S. Institute of Technology", "group": 3, "size": 50, "img": "img/pesit.jpg"},
+    {"id": "e3", "data": "University of California, San Diego", "group": 3, "size": 50, "img": "img/ucsd.jpg"},
 
     {"id": "links", "data": "Links", "group": 4, "size": 40, "fa": '\uf007'},
     {"id": "l1", "data": "Github", "group": 4, "size": 30, "fa": '\uf09b'},
