@@ -48,3 +48,8 @@ div.canvas-content{
     text-align:center;
     padding-top:30px;
 }
+
+d3-tip {
+    line-height: 1;
+    color: black;
+}

@@ -24,10 +24,18 @@ var width = window.innerWidth,
 
 console.log(width + " " + height);
 
-var myChart = d3.select("svg")
+var svg = d3.select("svg")
     .attr("preserveAspectRatio", "xMinYMin meet")
     .attr("viewBox", "0 0 " + width + " " + height)
     .classed("svg-content-responsive", true);
+
+var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function (d) {
+    return  d.data + "";
+})
+svg.call(tip);
 
 
 var force = d3.layout.force()
@@ -37,27 +45,21 @@ var force = d3.layout.force()
     .linkDistance(20)
     .size([width,height]); 
 
-var link = myChart.selectAll('line') 
+var link = svg.selectAll('line') 
     .data(graph.links).enter().append('line')
     .attr("class", "link")
     .attr('stroke', palette.lightgray)
     .style("stroke-width", function(l) { return l.weight * 0.5 });
   
 
-var node =  myChart.selectAll('circle')  
+var node =  svg.selectAll('circle')  
     .data(graph.nodes).enter() 
     .append('g') 
-    .call(force.drag); 
-
-     
-     // node.append('circle')
-     //        .attr('cx', function(d){return d.x; })
-     //        .attr('cy', function(d){return d.y; })
-     //        .attr("class", "node")
-     //        .attr("r", function(d) { return d.size; } )
-     //        .style("fill", function(d) { return color(d.group); })
-     //        ;
-
+    .call(force.drag)
+    .on('dblclick', connectedNodes)
+    .on('mouseover', tip.show) //Added
+    .on('mouseout', tip.hide); //Added 
+    ; 
 
 force.on('tick', function(e){ 
     graph.nodes[0].x = width / 2;
@@ -73,18 +75,6 @@ force.on('tick', function(e){
       .attr('x2', function(d){ return d.target.x; })
       .attr('y2', function(d){ return d.target.y; })
     });
-
-
-      // node.append('text')
-      //       .text(function(d){ return d.data; })
-      //       .attr('font-family', 'Raleway', 'Helvetica Neue, Helvetica')
-      //       .attr('fill', function(d, i){
-      //         return palette.gray;
-      //       })
-      //       .attr('text-anchor', function(d, i) {
-      //             return 'middle';
-      //       })
-      //       .attr('font-size', function(d){ return '.9em'; }) 
 
 node.append("clipPath")
     .attr("id",function(d,i){ return "node_clip"+i })
@@ -122,6 +112,45 @@ node.append("svg:image")
       .attr("width", function(d) { return 2 * d.size;})
       .attr("clip-path",function(d,i){ return "url(#node_clip"+i+")" });
     ;
+
+//Toggle stores whether the highlighting is on
+var toggle = 0;
+//Create an array logging what is connected to what
+var linkedByIndex = {};
+for (i = 0; i < graph.nodes.length; i++) {
+    linkedByIndex[i + "," + i] = 1;
+};
+graph.links.forEach(function (d) {
+    linkedByIndex[d.source + "," + d.target] = 1;
+    linkedByIndex[d.target + "," + d.source] = 1;
+});
+
+
+//This function looks up whether a pair are neighbours
+function neighboring(a, b) {
+    return linkedByIndex[a.index + "," + b.index];
+}
+function connectedNodes() {
+    if (toggle == 0) {
+        //Reduce the opacity of all but the neighbouring nodes
+        d = d3.select(this).node().__data__;
+        console.log(d);
+        node.style("opacity", function (o) {
+            return neighboring(d, o) | neighboring(o, d) ? 1 : 0.1;
+        });
+        link.style("opacity", function (o) {
+          console.log(o);
+            return d.index==o.source.index | d.index==o.target.index ? 1 : 0.1;
+        });
+        //Reduce the op
+        toggle = 1;
+    } else {
+        //Put them back to opacity=1
+        node.style("opacity", 1);
+        link.style("opacity", 1);
+        toggle = 0;
+    }
+}
 
 
 
