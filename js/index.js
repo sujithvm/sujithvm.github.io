@@ -1,0 +1,184 @@
+ 
+
+var palette = {
+    "lightgray": "#E5E8E8",
+    "gray": "#777777",
+    "white": "#FFFFFF",
+    "blue": "#3B757F"
+  }
+
+var color = d3.scale.category20();
+
+var graph = getData();
+graph.nodes.forEach(function(d) {
+  d.size = 0.75 * d.size;
+})
+graph.links.forEach(function(l) {
+  l.source = graph.nodes.map(function(e) {  return e.id; }).indexOf(l.source);
+  l.target = graph.nodes.map(function(e) { return e.id; }).indexOf(l.target);
+});
+
+
+var width = window.innerWidth,
+    height = window.innerHeight;
+
+console.log(width + " " + height);
+
+var myChart = d3.select("svg")
+    .attr("preserveAspectRatio", "xMinYMin meet")
+    .attr("viewBox", "0 0 " + width + " " + height)
+    .classed("svg-content-responsive", true);
+
+
+var force = d3.layout.force()
+    .nodes(graph.nodes)
+    .links(graph.links)
+    .charge(-2800)
+    .linkDistance(20)
+    .size([width,height]); 
+
+var link = myChart.selectAll('line') 
+    .data(graph.links).enter().append('line')
+    .attr("class", "link")
+    .attr('stroke', palette.lightgray)
+    .style("stroke-width", function(l) { return l.weight * 0.5 });
+  
+
+var node =  myChart.selectAll('circle')  
+    .data(graph.nodes).enter() 
+    .append('g') 
+    .call(force.drag); 
+
+     
+     // node.append('circle')
+     //        .attr('cx', function(d){return d.x; })
+     //        .attr('cy', function(d){return d.y; })
+     //        .attr("class", "node")
+     //        .attr("r", function(d) { return d.size; } )
+     //        .style("fill", function(d) { return color(d.group); })
+     //        ;
+
+
+force.on('tick', function(e){ 
+    graph.nodes[0].x = width / 2;
+    graph.nodes[0].y = height / 2;
+
+    node.attr('transform', function(d, i){
+      return 'translate(' + d.x + ','+ d.y + ')'
+    })
+
+    link 
+      .attr('x1', function(d){ return d.source.x; }) 
+      .attr('y1', function(d){ return d.source.y; })
+      .attr('x2', function(d){ return d.target.x; })
+      .attr('y2', function(d){ return d.target.y; })
+    });
+
+
+      // node.append('text')
+      //       .text(function(d){ return d.data; })
+      //       .attr('font-family', 'Raleway', 'Helvetica Neue, Helvetica')
+      //       .attr('fill', function(d, i){
+      //         return palette.gray;
+      //       })
+      //       .attr('text-anchor', function(d, i) {
+      //             return 'middle';
+      //       })
+      //       .attr('font-size', function(d){ return '.9em'; }) 
+
+node.append("clipPath")
+    .attr("id",function(d,i){ return "node_clip"+i })
+    .append("circle")
+    .attr("r",function(d) {
+      return d.size-2; //-2 to see a small border line
+    });
+
+node.append("circle")
+    .attr("r", function(d) {
+      return d.size;
+    })
+    .style("fill", function(d){ 
+      return palette.white
+    });
+
+node.append('text')
+    .attr('text-anchor', 'middle')
+    .attr('dominant-baseline', 'central')
+    .attr('font-family', 'FontAwesome')
+    .attr('font-size', function(d) {return (d.size * 1.2) + "px";})
+    .style('fill', function(d) { return palette.gray})
+    .text(function(d) { return d.fa ? d.fa : "";})
+    .attr("clip-path",function(d,i){ return "url(#node_clip"+i+")" });
+  ; 
+
+node.append("svg:image")
+      .attr("xlink:href", function(d) { 
+        if (d.img) return d.img;
+        else return ""
+      })
+      .attr("x", function(d) { return -d.size;})
+      .attr("y", function(d) { return -d.size;})
+      .attr("height", function(d) { return 2 * d.size;})
+      .attr("width", function(d) { return 2 * d.size;})
+      .attr("clip-path",function(d,i){ return "url(#node_clip"+i+")" });
+    ;
+
+
+
+force.start();
+
+function getData() {
+return {
+  "nodes": [
+    {"id": "me", "data": "Sujith Vadakkepat", "group": 1, "size": 120, "img": "img/sujithvm.jpg"},
+
+    {"id": "work", "data": "Work", "group": 2, "size": 40, "fa": '\uf0b1'},
+    {"id": "w1", "data": "Myntra", "group": 2, "size": 50, "img": "img/myntra.jpg"},
+    {"id": "w2", "data": "GSoC 2015", "group": 2, "size": 50, "img": "img/gsoc2015.jpg"},
+    {"id": "w3", "data": "GSoC 2014", "group": 2, "size": 50, "img": "img/gsoc2014.jpg"},
+    {"id": "w4", "data": "Mobiotics", "group": 2, "size": 50, "img": "img/mobiotics.jpg"},
+    {"id": "w5", "data": "Sanfoundry", "group": 2, "size": 50, "img": "img/sanfoundry.png"},
+
+    {"id": "education", "data": "Education", "group": 3, "size": 40, "fa": '\uf19c'},
+    {"id": "e1", "data": "S.J.B.H.S.", "group": 3, "size": 50, "img": "img/sjbhs.png"},
+    {"id": "e2", "data": "P.E.S.I.T.", "group": 3, "size": 50, "img": "img/pesit.jpg"},
+    {"id": "e3", "data": "U.C.S.D", "group": 3, "size": 50, "img": "img/ucsd.jpg"},
+
+    {"id": "links", "data": "Links", "group": 4, "size": 40, "fa": '\uf007'},
+    {"id": "l1", "data": "Github", "group": 4, "size": 30, "fa": '\uf09b'},
+    {"id": "l2", "data": "LinkedIn", "group": 4, "size": 30, "fa": '\uf0e1'},
+    {"id": "l3", "data": "StackOverflow", "group": 4, "size": 30, "fa": '\uf16c'},
+
+    {"id": "skills", "data": "Skills", "group": 5, "size": 40, "fa": '\uf109'},
+    {"id": "s1", "data": "Java", "group": 5, "size": 30, "img": "img/java.png"},
+    {"id": "s2", "data": "JavaScript", "group": 5, "size": 30, "img": "img/js.png"},
+    {"id": "s3", "data": "Android", "group": 5, "size": 30, "img": "img/android.png"}
+
+  ],
+  "links": [
+    {"source": "me", "target": "work", "weight": 10},
+    {"source": "me", "target": "education", "weight": 10},
+    {"source": "me", "target": "links", "weight": 10},
+    {"source": "me", "target": "skills", "weight": 10},
+
+    {"source": "work", "target": "w1", "weight": 4},
+    {"source": "work", "target": "w2", "weight": 4},
+    {"source": "work", "target": "w3", "weight": 4},
+    {"source": "work", "target": "w4", "weight": 4},
+    {"source": "work", "target": "w5", "weight": 4},
+
+    {"source": "education", "target": "e1", "weight": 4},
+    {"source": "education", "target": "e2", "weight": 4},
+    {"source": "education", "target": "e3", "weight": 4},
+
+    {"source": "links", "target": "l1", "weight": 4},
+    {"source": "links", "target": "l2", "weight": 4},
+    {"source": "links", "target": "l3", "weight": 4},
+
+    {"source": "skills", "target": "s1", "weight": 4},
+    {"source": "skills", "target": "s2", "weight": 4},
+    {"source": "skills", "target": "s3", "weight": 4}
+
+  ]
+}
+}
