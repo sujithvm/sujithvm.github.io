@@ -41,7 +41,7 @@ svg.call(tip);
 var force = d3.layout.force()
     .nodes(graph.nodes)
     .links(graph.links)
-    .charge(-2800)
+    .charge(-2400)
     .linkDistance(20)
     .size([width,height]); 
 
@@ -181,14 +181,22 @@ return {
     {"id": "skills", "data": "Skills", "group": 5, "size": 40, "fa": '\uf109'},
     {"id": "s1", "data": "Java", "group": 5, "size": 30, "img": "img/java.png"},
     {"id": "s2", "data": "JavaScript", "group": 5, "size": 30, "img": "img/js.png"},
-    {"id": "s3", "data": "Android", "group": 5, "size": 30, "img": "img/android.png"}
+    {"id": "s3", "data": "Android", "group": 5, "size": 30, "img": "img/android.png"},
+    {"id": "s4", "data": "Python", "group": 5, "size": 30, "img": "img/python.png"},
 
+    {"id": "start-up", "data": "Start-Up", "group": 6, "size": 40, "fa": '\uf1ad'},
+    {"id": "su1", "data": "Viands - One100Solutions", "group": 6, "size": 50, "img": "img/viands.png"},
+
+    {"id": "publications", "data": "Publications", "group": 7, "size": 40, "fa": '\uf1ea'},
+    {"id": "p1", "data": "ScientoBASE", "group": 7, "size": 50, "img": "img/graph.png"}
   ],
   "links": [
     {"source": "me", "target": "work", "weight": 10},
     {"source": "me", "target": "education", "weight": 10},
     {"source": "me", "target": "links", "weight": 10},
     {"source": "me", "target": "skills", "weight": 10},
+    {"source": "me", "target": "start-up", "weight": 10},
+     {"source": "me", "target": "publications", "weight": 10},
 
     {"source": "work", "target": "w1", "weight": 4},
     {"source": "work", "target": "w2", "weight": 4},
@@ -206,7 +214,12 @@ return {
 
     {"source": "skills", "target": "s1", "weight": 4},
     {"source": "skills", "target": "s2", "weight": 4},
-    {"source": "skills", "target": "s3", "weight": 4}
+    {"source": "skills", "target": "s3", "weight": 4},
+    {"source": "skills", "target": "s4", "weight": 4},
+
+    {"source": "start-up", "target": "su1", "weight": 4},
+
+    {"source": "publications", "target": "p1", "weight": 4}
 
   ]
 }
